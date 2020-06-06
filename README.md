@@ -15,7 +15,9 @@ allprojects {
  
 1、转菊花加载LoadingDialog
     new LoadingDialog(this).show(); dismiss；
+
 2、调用系统相册
+        //
      String path=Environment.getExternalStorageDirectory() + "/ruihan/pics/";//图片保存路径主要用于相机获取
      PicGetter.instance().getPicFromAlbum(this);//相册获取
      PicGetter.instance().getPicFromCamara(this, path);//相机获取
