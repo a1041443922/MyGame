@@ -4,15 +4,13 @@
 
 引用 gradle
 
-allprojects {
-    repositories {
-       ...
-        maven { url 'https://jitpack.io' }
+    allprojects {
+        repositories {
+            ...
+            maven { url 'https://jitpack.io' }
+        }
     }
-}
-
-
- implementation 'com.github.a1041443922:MyGame:v102'
+    implementation 'com.github.a1041443922:MyGame:v102'
  
 1、转菊花加载LoadingDialog
 
