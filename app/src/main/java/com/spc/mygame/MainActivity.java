@@ -1,13 +1,20 @@
 package com.spc.mygame;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ruihan.loading.LoadingDialog;
+import com.ruihan.systempic.PicGetter;
+import com.ruihan.systempic.util.PicUtil;
 import com.spc.mygame.base.BaseActivity;
 import com.spc.mygame.model.MsgDetail;
 import com.spc.mygame.model.TestModel;
@@ -15,6 +22,7 @@ import com.spc.mygame.util.HttpUtil;
 import com.spc.mygame.view.BannerAdapter;
 import com.spc.mygame.view.CardTransformer;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
@@ -49,9 +57,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         params.put("mid", "24");
         HttpUtil.sendHttpPost(this, url, params, MsgDetail.class);
         initViewPager();
-        new LoadingDialog(this).show();
     }
-    private void initViewPager(){
+
+    private void initViewPager() {
         mBannerAdapter = new BannerAdapter(this, mPics);
         mViewpager.setAdapter(mBannerAdapter);
         mViewpager.setPageMargin(10);
@@ -60,10 +68,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mViewpager.setPageTransformer(true, new CardTransformer());
         mViewpager.setCurrentItem(1);
     }
+
     @Override
     public void onClick(View v) {
-        Intent intent = new Intent(MainActivity.this, LoadingActivity.class);
-        startActivity(intent);
+//        Intent intent = new Intent(MainActivity.this, LoadingActivity.class);
+//        startActivity(intent);
+
+        PicGetter.instance().getPicFromAlbum(this);
+//        PicGetter.instance().getPicFromCamara(this, Environment.getExternalStorageDirectory() + "/ruihan/pics/");
     }
 
     @Override
@@ -73,5 +85,20 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             MsgDetail msgDetail = (MsgDetail) testModel.object;
             changeTv.setText(msgDetail.linfo.content);
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        File file = PicGetter.instance().getPic(this, requestCode, resultCode, data);
+        Toast.makeText(this, file.getPath(), Toast.LENGTH_SHORT).show();
+        Log.d("", "");
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (PicGetter.instance().permitionSet(this, "", requestCode, grantResults)) return;
+        Toast.makeText(this, "打开权限", Toast.LENGTH_SHORT).show();
     }
 }

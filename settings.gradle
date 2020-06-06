@@ -1,3 +1,4 @@
 rootProject.name='MyGame'
 include ':app'
 include ':loading'
+include ':systempic'
